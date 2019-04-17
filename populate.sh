@@ -25,7 +25,7 @@ curl -s -XDELETE "$ADDRESS/get-together" > /dev/null
 
 # Create the next index using mapping.json
 echo "Creating 'get-together' index..."
-curl -s -XPUT -H'Content-Type: application/json' "$ADDRESS/get-together" -d@$(dirname $0)/mapping.json
+curl -s -XPUT -H'Content-Type: application/json' "$ADDRESS/get-together?include_type_name=true" -d@$(dirname $0)/mapping.json
 
 # Wait for index to become yellow
 curl -s "$ADDRESS/get-together/_health?wait_for_status=yellow&timeout=10s" > /dev/null
@@ -379,7 +379,7 @@ echo
 
 echo
 echo "Creating Templates."
-curl -s -XPUT "http://$ADDRESS/_template/logging_index_all" -H'Content-Type: application/json' -d'{
+curl -s -XPUT "http://$ADDRESS/_template/logging_index_all?include_type_name=true" -H'Content-Type: application/json' -d'{
     "template" : "logstash-09-*",
     "order" : 1,
     "settings" : {
@@ -390,7 +390,7 @@ curl -s -XPUT "http://$ADDRESS/_template/logging_index_all" -H'Content-Type: app
 }'
 
 echo
-curl -s -XPUT "http://$ADDRESS/_template/logging_index" -H'Content-Type: application/json' -d '{
+curl -s -XPUT "http://$ADDRESS/_template/logging_index?include_type_name=true" -H'Content-Type: application/json' -d '{
     "template" : "logstash-*",
     "order" : 0,
     "settings" : {
@@ -405,7 +405,7 @@ echo "Done Creating Templates."
 echo
 echo "Adding Dynamic Mapping"
 curl -s -XDELETE "http://$ADDRESS/myindex" > /dev/null
-curl -s -XPUT "http://$ADDRESS/myindex" -H'Content-Type: application/json' -d'
+curl -s -XPUT "http://$ADDRESS/myindex?include_type_name=true" -H'Content-Type: application/json' -d'
 {
     "mappings" : {
         "my_type" : {
@@ -428,9 +428,9 @@ echo
 echo "Adding Aliases"
 curl -s -XDELETE "http://$ADDRESS/november_2014_invoices" > /dev/null
 curl -s -XDELETE "http://$ADDRESS/december_2014_invoices" > /dev/null
-curl -s -XPUT "http://$ADDRESS/november_2014_invoices"
+curl -s -XPUT "http://$ADDRESS/november_2014_invoices?include_type_name=true"
 echo
-curl -s -XPUT "http://$ADDRESS/december_2014_invoices" -H'Content-Type: application/json' -d'
+curl -s -XPUT "http://$ADDRESS/december_2014_invoices?include_type_name=true" -H'Content-Type: application/json' -d'
 {
     "mappings" :
     {
